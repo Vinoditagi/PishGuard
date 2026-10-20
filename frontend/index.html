@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#080d18">
+
+  <title>ScamShield AI | Think Before You Click</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
+</head>
+
+<body>
+  <header class="navbar">
+    <a href="#" class="brand">
+      <span class="brand-icon">S</span>
+      <span>ScamShield <span class="accent">AI</span></span>
+    </a>
+
+    <nav>
+      <a href="#scanner">Scanner</a>
+      <a href="#how-it-works">How it works</a>
+      <a href="#safety">Safety tips</a>
+    </nav>
+
+    <a href="#scanner" class="nav-button">Check a message ↗</a>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="badge">
+        <span class="live-dot"></span>
+        YOUR DIGITAL SAFETY ASSISTANT
+      </div>
+
+      <h1>Think before<br><span class="gradient-text">you click.</span></h1>
+
+      <p class="hero-description">
+        Suspicious message? Unexpected link?
+        Analyse potential scam indicators before deciding what to trust.
+      </p>
+
+      <a href="#scanner" class="primary-button">
+        Analyse a message <span>↓</span>
+      </a>
+
+      <p class="trust-note">
+        ✦ AI-assisted analysis · Clear explanations · Safety first
+      </p>
+    </section>
+
+    <section class="scanner-section" id="scanner">
+      <div class="section-heading">
+        <span class="section-label">01 / SCAN</span>
+        <h2>Let's check that.</h2>
+        <p>Enter a message, a website URL, or both.</p>
+      </div>
+
+      <div class="scanner-card">
+        <div class="card-header">
+          <div class="window-dots">
+            <span></span><span></span><span></span>
+          </div>
+          <span>SECURITY ANALYSER</span>
+          <span class="api-label">● INPUT ANALYSIS</span>
+        </div>
+
+        <form id="scanForm">
+          <div class="field-group">
+            <label for="message">
+              <span class="field-icon">✉</span>
+              Suspicious message
+              <span class="optional">OPTIONAL</span>
+            </label>
+
+            <textarea
+              id="message"
+              name="message"
+              rows="5"
+              placeholder="Paste the message you received here..."
+            ></textarea>
+
+            <div class="field-footer">
+              <span>Don't include real passwords or OTPs.</span>
+              <span id="charCount">0 characters</span>
+            </div>
+          </div>
+
+          <div class="divider"><span>AND / OR</span></div>
+
+          <div class="field-group">
+            <label for="url">
+              <span class="field-icon">↗</span>
+              Website URL
+              <span class="optional">OPTIONAL</span>
+            </label>
+
+            <input
+              id="url"
+              name="url"
+              type="text"
+              inputmode="url"
+              autocomplete="off"
+              spellcheck="false"
+              placeholder="https://example.com"
+            >
+
+            <div class="field-footer">
+              <span>Submit a URL for analysis without opening it.</span>
+            </div>
+          </div>
+
+          <button type="submit" class="scan-button" id="detectBtn">
+            <span class="button-icon">⌕</span>
+            <span id="buttonText">Analyse for scams</span>
+            <span class="button-arrow">→</span>
+          </button>
+
+          <p class="form-note">
+            ⓘ A result is not a guarantee that a message or link is safe.
+          </p>
+        </form>
+
+        <section id="result" class="result-panel" aria-live="polite" hidden></section>
+      </div>
+    </section>
+
+    <section class="how-section" id="how-it-works">
+      <div class="section-heading">
+        <span class="section-label">02 / PROCESS</span>
+        <h2>Simple in. Clear out.</h2>
+        <p>A straightforward way to investigate something suspicious.</p>
+      </div>
+
+      <div class="steps-grid">
+        <article class="step-card">
+          <span class="step-number">01</span>
+          <div class="step-icon">⌨</div>
+          <h3>Submit</h3>
+          <p>Enter the message or URL you want to check.</p>
+        </article>
+
+        <article class="step-card">
+          <span class="step-number">02</span>
+          <div class="step-icon">⌘</div>
+          <h3>Analyse</h3>
+          <p>The connected detection API processes your input.</p>
+        </article>
+
+        <article class="step-card">
+          <span class="step-number">03</span>
+          <div class="step-icon">◈</div>
+          <h3>Understand</h3>
+          <p>Review the result, reasons, and safety guidance.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="safety-section" id="safety">
+      <div class="safety-icon">✳</div>
+      <div>
+        <span class="section-label">03 / STAY PROTECTED</span>
+        <h2>Pause. Verify. Then act.</h2>
+        <p>
+          Never share passwords, banking PINs, or OTPs in response to
+          unexpected messages. Verify important requests through an
+          independent, official channel.
+        </p>
+      </div>
+    </section>
+
+    <section class="disclaimer">
+      <span class="disclaimer-icon">ⓘ</span>
+      <p>
+        <strong>A note on accuracy:</strong>
+        ScamShield AI provides AI-assisted analysis, not a guarantee.
+        False positives and missed scams are possible. A result that is
+        not flagged as suspicious does not prove that a message or URL is safe.
+      </p>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <a href="#" class="brand footer-brand">
+      <span class="brand-icon">S</span>
+      <span>ScamShield <span class="accent">AI</span></span>
+    </a>
+
+    <p>Built for a safer digital world.</p>
+
+    <span class="footer-status">
+      <span class="live-dot"></span>
+      AI-assisted detection
+    </span>
+  </footer>
+</body>
+</html>
