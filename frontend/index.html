@@ -1,202 +1,741 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#080d18">
+    <meta charset="UTF-8">
 
-  <title>ScamShield AI | Think Before You Click</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <meta
+        name="description"
+        content="PishGuard AI helps identify suspicious messages and potentially risky URLs using automated scam detection."
+    >
 
-  <link rel="stylesheet" href="style.css">
-  <script src="script.js" defer></script>
+    <meta name="theme-color" content="#6F4E37">
+
+    <title>PishGuard AI | Scam & Phishing Detection</title>
+
+    <!-- External CSS -->
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-  <header class="navbar">
-    <a href="#" class="brand">
-      <span class="brand-icon">S</span>
-      <span>ScamShield <span class="accent">AI</span></span>
-    </a>
 
-    <nav>
-      <a href="#scanner">Scanner</a>
-      <a href="#how-it-works">How it works</a>
-      <a href="#safety">Safety tips</a>
-    </nav>
+    <!-- =====================================
+         NAVIGATION BAR
+    ====================================== -->
 
-    <a href="#scanner" class="nav-button">Check a message ↗</a>
-  </header>
+    <header class="navbar">
+        <div class="nav-container">
 
-  <main>
-    <section class="hero">
-      <div class="badge">
-        <span class="live-dot"></span>
-        YOUR DIGITAL SAFETY ASSISTANT
-      </div>
+            <a href="#home" class="logo" aria-label="PishGuard AI Home">
+                <span class="logo-icon" aria-hidden="true">P</span>
 
-      <h1>Think before<br><span class="gradient-text">you click.</span></h1>
+                <span class="logo-text">
+                    PishGuard <span class="logo-ai">AI</span>
+                </span>
+            </a>
 
-      <p class="hero-description">
-        Suspicious message? Unexpected link?
-        Analyse potential scam indicators before deciding what to trust.
-      </p>
+            <nav class="nav-links" aria-label="Main navigation">
+                <a href="#home">Home</a>
+                <a href="#scanner">Scanner</a>
+                <a href="#how-it-works">How It Works</a>
+                <a href="#security">Security</a>
+            </nav>
 
-      <a href="#scanner" class="primary-button">
-        Analyse a message <span>↓</span>
-      </a>
+            <a href="#scanner" class="nav-button">
+                Scan Message
+            </a>
 
-      <p class="trust-note">
-        ✦ AI-assisted analysis · Clear explanations · Safety first
-      </p>
-    </section>
+        </div>
+    </header>
 
-    <section class="scanner-section" id="scanner">
-      <div class="section-heading">
-        <span class="section-label">01 / SCAN</span>
-        <h2>Let's check that.</h2>
-        <p>Enter a message, a website URL, or both.</p>
-      </div>
 
-      <div class="scanner-card">
-        <div class="card-header">
-          <div class="window-dots">
-            <span></span><span></span><span></span>
-          </div>
-          <span>SECURITY ANALYSER</span>
-          <span class="api-label">● INPUT ANALYSIS</span>
+    <main>
+
+        <!-- =====================================
+             HERO SECTION
+        ====================================== -->
+
+        <section class="hero" id="home">
+
+            <div class="hero-container">
+
+                <div class="hero-content">
+
+                    <span class="eyebrow">
+                        INTELLIGENT THREAT ANALYSIS
+                    </span>
+
+                    <h1>
+                        Detect Scams.<br>
+                        Protect Your <span>Digital World.</span>
+                    </h1>
+
+                    <p>
+                        Analyze suspicious messages and URLs before you
+                        trust them. PishGuard AI helps identify potential
+                        scam indicators so you can make safer decisions online.
+                    </p>
+
+                    <div class="hero-actions">
+
+                        <a href="#scanner" class="primary-button">
+                            Start Scanning
+                            <span aria-hidden="true">&rarr;</span>
+                        </a>
+
+                        <a href="#how-it-works" class="secondary-button">
+                            Learn More
+                        </a>
+
+                    </div>
+
+                </div>
+
+
+                <div class="hero-visual">
+
+                    <div class="visual-card">
+
+                        <div class="visual-icon" aria-hidden="true">
+                            &#128737;
+                        </div>
+
+                        <h3>Digital Threat Analysis</h3>
+
+                        <p>
+                            Examine message content and URL indicators
+                            to identify potential online risks.
+                        </p>
+
+                        <div class="visual-status">
+                            <span class="status-dot"></span>
+                            Detection service interface
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================
+             CAPABILITIES
+        ====================================== -->
+
+        <section class="capabilities-strip"
+                 aria-label="PishGuard capabilities">
+
+            <div class="capability-item">
+
+                <span class="capability-icon" aria-hidden="true">
+                    &#128172;
+                </span>
+
+                <div>
+                    <strong>Message Analysis</strong>
+                    <span>Check suspicious text</span>
+                </div>
+
+            </div>
+
+
+            <div class="capability-item">
+
+                <span class="capability-icon" aria-hidden="true">
+                    &#128279;
+                </span>
+
+                <div>
+                    <strong>URL Inspection</strong>
+                    <span>Check potentially risky links</span>
+                </div>
+
+            </div>
+
+
+            <div class="capability-item">
+
+                <span class="capability-icon" aria-hidden="true">
+                    &#128737;
+                </span>
+
+                <div>
+                    <strong>Risk Assessment</strong>
+                    <span>Review detection indicators</span>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================
+             SCANNER SECTION
+        ====================================== -->
+
+        <section class="scanner-section" id="scanner">
+
+            <div class="container">
+
+                <div class="section-heading">
+
+                    <span class="section-eyebrow">
+                        SECURITY SCANNER
+                    </span>
+
+                    <h2>
+                        Analyze a Suspicious Message
+                    </h2>
+
+                    <p>
+                        Paste a suspicious message, enter a URL, or provide
+                        both. The backend will analyze the information and
+                        return the detected indicators.
+                    </p>
+
+                </div>
+
+
+                <div class="scanner-layout">
+
+                    <!-- SCANNER FORM -->
+
+                    <div class="scanner-card">
+
+                        <h3>Threat Detection</h3>
+
+                        <p class="scanner-description">
+                            Enter the content you want to analyze.
+                            You do not need to fill in both fields.
+                        </p>
+
+
+                        <form id="scanForm" novalidate>
+
+                            <!-- MESSAGE INPUT -->
+
+                            <div class="form-group">
+
+                                <label for="message">
+                                    Suspicious Message
+                                </label>
+
+                                <textarea
+                                    id="message"
+                                    name="message"
+                                    placeholder="Paste the suspicious SMS, email, or message here..."
+                                    maxlength="10000"
+                                    aria-describedby="messageHelp charCount"
+                                ></textarea>
+
+                                <div class="input-footer">
+
+                                    <span id="messageHelp">
+                                        Do not include passwords or private information.
+                                    </span>
+
+                                    <span>
+                                        <span id="charCount">0</span>/10000
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- URL INPUT -->
+
+                            <div class="form-group">
+
+                                <label for="url">
+                                    Website URL
+                                    <span>(Optional)</span>
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="url"
+                                    name="url"
+                                    placeholder="https://example.com"
+                                    maxlength="2048"
+                                    autocomplete="url"
+                                    spellcheck="false"
+                                >
+
+                                <span class="form-help">
+                                    Enter the URL you want to inspect.
+                                    Do not open suspicious links to test them.
+                                </span>
+
+                            </div>
+
+
+                            <!-- SUBMIT BUTTON -->
+
+                            <button
+                                type="submit"
+                                id="detectBtn"
+                                class="scan-button"
+                            >
+
+                                <span aria-hidden="true">&#128737;</span>
+
+                                <span id="buttonText">
+                                    Scan for Scams
+                                </span>
+
+                            </button>
+
+
+                            <!-- ERROR MESSAGE -->
+
+                            <div
+                                id="errorMessage"
+                                class="error-message"
+                                role="alert"
+                                aria-live="polite"
+                                hidden
+                            ></div>
+
+                        </form>
+
+                    </div>
+
+
+                    <!-- INFORMATION PANEL -->
+
+                    <aside class="scanner-info">
+
+                        <h3>What We Analyze</h3>
+
+
+                        <div class="info-card">
+
+                            <div class="info-icon" aria-hidden="true">
+                                &#128172;
+                            </div>
+
+                            <h4>Message Indicators</h4>
+
+                            <p>
+                                Checks message text for predefined phrases
+                                commonly associated with suspicious requests,
+                                prizes, urgency, and account verification.
+                            </p>
+
+                        </div>
+
+
+                        <div class="info-card">
+
+                            <div class="info-icon" aria-hidden="true">
+                                &#128279;
+                            </div>
+
+                            <h4>URL Indicators</h4>
+
+                            <p>
+                                Examines basic URL structure, certain
+                                shortened links, IP-address URLs, and
+                                selected suspicious-looking patterns.
+                            </p>
+
+                        </div>
+
+
+                        <div class="info-card">
+
+                            <div class="info-icon" aria-hidden="true">
+                                &#128202;
+                            </div>
+
+                            <h4>Risk Assessment</h4>
+
+                            <p>
+                                Combines detected indicators into a
+                                heuristic risk score to help prioritize
+                                further checking.
+                            </p>
+
+                        </div>
+
+
+                        <div class="info-card">
+
+                            <div class="info-icon" aria-hidden="true">
+                                &#128274;
+                            </div>
+
+                            <h4>Stay Alert</h4>
+
+                            <p>
+                                Never share an OTP, PIN, password, or
+                                banking details in response to an
+                                unexpected message.
+                            </p>
+
+                        </div>
+
+                    </aside>
+
+                </div>
+
+
+                <!-- =====================================
+                     RESULTS PANEL
+                ====================================== -->
+
+                <section
+                    id="result"
+                    class="scanner-card result-panel"
+                    aria-labelledby="resultTitle"
+                    aria-live="polite"
+                    hidden
+                >
+
+                    <div class="result-header">
+
+                        <div>
+
+                            <span class="section-eyebrow">
+                                SCAN REPORT
+                            </span>
+
+                            <h2 id="resultTitle">
+                                Analysis Complete
+                            </h2>
+
+                            <p id="resultSummary">
+                                Your scan results will appear here.
+                            </p>
+
+                        </div>
+
+
+                        <span
+                            id="resultBadge"
+                            class="result-badge"
+                        >
+                            RESULT
+                        </span>
+
+                    </div>
+
+
+                    <!-- RISK SCORE -->
+
+                    <div
+                        id="probabilityPanel"
+                        class="probability-panel"
+                    >
+
+                        <div class="score-layout">
+
+                            <div
+                                id="scoreCircle"
+                                class="score-circle"
+                                role="img"
+                                aria-label="Heuristic risk score"
+                                style="--score: 0%; --ring-color: #24845B;"
+                            >
+
+                                <div class="score-inner">
+
+                                    <span id="spamPercentage">
+                                        0%
+                                    </span>
+
+                                    <span class="score-small-label">
+                                        Risk Score
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="score-information">
+
+                                <h3>
+                                    Risk Assessment
+                                </h3>
+
+                                <p>
+                                    Risk level:
+                                    <strong id="riskLevel">
+                                        Low
+                                    </strong>
+                                </p>
+
+                                <p
+                                    id="scoreDescription"
+                                    class="score-description"
+                                >
+                                    Waiting for analysis.
+                                </p>
+
+                                <p
+                                    id="scoreCaption"
+                                    class="score-caption"
+                                >
+                                    Heuristic risk score
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- SCORE UNAVAILABLE MESSAGE -->
+
+                    <p
+                        id="probabilityUnavailable"
+                        hidden
+                    >
+                        A risk score was not provided by the backend.
+                    </p>
+
+
+                    <!-- DETECTION REASONS -->
+
+                    <div class="result-detail-block">
+
+                        <h3>Detection Details</h3>
+
+                        <ul id="reasonsList">
+                            <li>
+                                No scan has been performed yet.
+                            </li>
+                        </ul>
+
+                    </div>
+
+
+                    <!-- BACKEND NOTE -->
+
+                    <div class="result-detail-block">
+
+                        <h3>About This Result</h3>
+
+                        <p id="resultNote">
+                            Scan information will appear here.
+                        </p>
+
+                    </div>
+
+
+                    <!-- SAFETY NOTE -->
+
+                    <div class="result-safety-note">
+
+                        <strong>Security Reminder</strong>
+
+                        <p id="safetyNote">
+                            Never share passwords, OTPs, PINs, or banking
+                            details in response to an unexpected request.
+                        </p>
+
+                    </div>
+
+
+                    <!-- SCAN AGAIN BUTTON -->
+
+                    <div class="result-actions">
+
+                        <button
+                            type="button"
+                            id="scanAgainBtn"
+                            class="primary-button"
+                        >
+                            Scan Another Message
+                        </button>
+
+                    </div>
+
+                </section>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================
+             HOW IT WORKS
+        ====================================== -->
+
+        <section class="steps-section" id="how-it-works">
+
+            <div class="container">
+
+                <div class="section-heading">
+
+                    <span class="section-eyebrow">
+                        THE PROCESS
+                    </span>
+
+                    <h2>
+                        How PishGuard Works
+                    </h2>
+
+                    <p>
+                        A simple process for examining potentially
+                        suspicious messages and links.
+                    </p>
+
+                </div>
+
+
+                <div class="steps-grid">
+
+                    <article class="step-card">
+
+                        <div class="step-number">
+                            01
+                        </div>
+
+                        <h3>Enter the Content</h3>
+
+                        <p>
+                            Paste a message or enter a URL that you
+                            want to check.
+                        </p>
+
+                    </article>
+
+
+                    <article class="step-card">
+
+                        <div class="step-number">
+                            02
+                        </div>
+
+                        <h3>Analyze Indicators</h3>
+
+                        <p>
+                            The backend checks the supplied content
+                            against its configured detection rules.
+                        </p>
+
+                    </article>
+
+
+                    <article class="step-card">
+
+                        <div class="step-number">
+                            03
+                        </div>
+
+                        <h3>Review the Results</h3>
+
+                        <p>
+                            Review the risk score and detected
+                            indicators before deciding what to do.
+                        </p>
+
+                    </article>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================
+             SECURITY SECTION
+        ====================================== -->
+
+        <section class="security-section" id="security">
+
+            <div class="container">
+
+                <div class="security-card">
+
+                    <div
+                        class="security-icon"
+                        aria-hidden="true"
+                    >
+                        &#128274;
+                    </div>
+
+                    <div>
+
+                        <h2>
+                            Think Before You Click
+                        </h2>
+
+                        <p>
+                            PishGuard provides preliminary checks, not
+                            a guarantee that a message or website is safe.
+                            Detection rules can miss scams and may also
+                            flag legitimate messages. Verify unexpected
+                            requests using independently obtained official
+                            contact details. Never share passwords, OTPs,
+                            PINs, or banking details.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- =====================================
+         FOOTER
+    ====================================== -->
+
+    <footer>
+
+        <div class="footer-container">
+
+            <div>
+
+                <a href="#home" class="footer-brand">
+                    PishGuard AI
+                </a>
+
+                <p class="footer-text">
+                    Smart awareness for a safer digital world.
+                </p>
+
+                <p class="footer-text">
+                    &copy; <span id="currentYear"></span>
+                    PishGuard AI. All rights reserved.
+                </p>
+
+            </div>
+
+
+            <nav class="footer-links" aria-label="Footer navigation">
+
+                <a href="#home">Home</a>
+
+                <a href="#scanner">Scanner</a>
+
+                <a href="#how-it-works">How It Works</a>
+
+                <a href="#security">Security</a>
+
+            </nav>
+
         </div>
 
-        <form id="scanForm">
-          <div class="field-group">
-            <label for="message">
-              <span class="field-icon">✉</span>
-              Suspicious message
-              <span class="optional">OPTIONAL</span>
-            </label>
+    </footer>
 
-            <textarea
-              id="message"
-              name="message"
-              rows="5"
-              placeholder="Paste the message you received here..."
-            ></textarea>
 
-            <div class="field-footer">
-              <span>Don't include real passwords or OTPs.</span>
-              <span id="charCount">0 characters</span>
-            </div>
-          </div>
+    <!-- JavaScript: Keep this immediately before </body> -->
+    <script src="script.js"></script>
 
-          <div class="divider"><span>AND / OR</span></div>
-
-          <div class="field-group">
-            <label for="url">
-              <span class="field-icon">↗</span>
-              Website URL
-              <span class="optional">OPTIONAL</span>
-            </label>
-
-            <input
-              id="url"
-              name="url"
-              type="text"
-              inputmode="url"
-              autocomplete="off"
-              spellcheck="false"
-              placeholder="https://example.com"
-            >
-
-            <div class="field-footer">
-              <span>Submit a URL for analysis without opening it.</span>
-            </div>
-          </div>
-
-          <button type="submit" class="scan-button" id="detectBtn">
-            <span class="button-icon">⌕</span>
-            <span id="buttonText">Analyse for scams</span>
-            <span class="button-arrow">→</span>
-          </button>
-
-          <p class="form-note">
-            ⓘ A result is not a guarantee that a message or link is safe.
-          </p>
-        </form>
-
-        <section id="result" class="result-panel" aria-live="polite" hidden></section>
-      </div>
-    </section>
-
-    <section class="how-section" id="how-it-works">
-      <div class="section-heading">
-        <span class="section-label">02 / PROCESS</span>
-        <h2>Simple in. Clear out.</h2>
-        <p>A straightforward way to investigate something suspicious.</p>
-      </div>
-
-      <div class="steps-grid">
-        <article class="step-card">
-          <span class="step-number">01</span>
-          <div class="step-icon">⌨</div>
-          <h3>Submit</h3>
-          <p>Enter the message or URL you want to check.</p>
-        </article>
-
-        <article class="step-card">
-          <span class="step-number">02</span>
-          <div class="step-icon">⌘</div>
-          <h3>Analyse</h3>
-          <p>The connected detection API processes your input.</p>
-        </article>
-
-        <article class="step-card">
-          <span class="step-number">03</span>
-          <div class="step-icon">◈</div>
-          <h3>Understand</h3>
-          <p>Review the result, reasons, and safety guidance.</p>
-        </article>
-      </div>
-    </section>
-
-    <section class="safety-section" id="safety">
-      <div class="safety-icon">✳</div>
-      <div>
-        <span class="section-label">03 / STAY PROTECTED</span>
-        <h2>Pause. Verify. Then act.</h2>
-        <p>
-          Never share passwords, banking PINs, or OTPs in response to
-          unexpected messages. Verify important requests through an
-          independent, official channel.
-        </p>
-      </div>
-    </section>
-
-    <section class="disclaimer">
-      <span class="disclaimer-icon">ⓘ</span>
-      <p>
-        <strong>A note on accuracy:</strong>
-        ScamShield AI provides AI-assisted analysis, not a guarantee.
-        False positives and missed scams are possible. A result that is
-        not flagged as suspicious does not prove that a message or URL is safe.
-      </p>
-    </section>
-  </main>
-
-  <footer class="footer">
-    <a href="#" class="brand footer-brand">
-      <span class="brand-icon">S</span>
-      <span>ScamShield <span class="accent">AI</span></span>
-    </a>
-
-    <p>Built for a safer digital world.</p>
-
-    <span class="footer-status">
-      <span class="live-dot"></span>
-      AI-assisted detection
-    </span>
-  </footer>
 </body>
 </html>
