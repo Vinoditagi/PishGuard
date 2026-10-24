@@ -1,10 +1,20 @@
-
 import json
 import os
 from pathlib import Path
 
 from dotenv import load_dotenv
 from google import genai
+
+# MCP live-lookup helper. If it cannot be loaded for any reason, PishGuard
+# keeps working exactly as before (just without live lookups).
+try:
+    from backend.mcp_evidence import gather_evidence
+except Exception:
+    try:
+        from mcp_evidence import gather_evidence
+    except Exception:
+        def gather_evidence(message="", url=""):
+            return []
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 load_dotenv(PROJECT_ROOT / ".env")
@@ -15,7 +25,7 @@ MODEL_NAME = os.getenv("GEMINI_MODEL", "gemini-3.8-flash")
 client = genai.Client(api_key=API_KEY) if API_KEY else None
 
 
-def unavailable_result():
+def unavailable_result(evidence=None):
     return {
         "available": False,
         "verdict": "uncertain",
@@ -25,12 +35,57 @@ def unavailable_result():
             "PishGuard's rule-based and ML checks can still provide results."
         ),
         "reasons": [],
+        "evidence": evidence or [],
     }
 
 
+def format_evidence(evidence):
+    """Turn MCP lookup results into plain text for the Gemini prompt."""
+    if not evidence:
+        return "No automated lookups were performed."
+
+    lines = []
+    for item in evidence:
+        age = item.get("age", {}) or {}
+        ip = item.get("ip", {}) or {}
+
+        if age.get("found"):
+            age_txt = (
+                f"registered on {age['created']} "
+                f"({age['age_days']} days old)"
+            )
+        elif age.get("error"):
+            age_txt = "registration date lookup failed"
+        else:
+            age_txt = "no registration date found in WHOIS"
+
+        if ip.get("ip"):
+            ip_txt = f"resolves to {ip['ip']}"
+        elif ip.get("error") == "gaierror":
+            ip_txt = "does not resolve to an IP address (DNS lookup failed)"
+        elif ip.get("error") == "no_network":
+            ip_txt = "could not be checked (no internet connection)"
+        else:
+            ip_txt = "IP lookup returned nothing"
+
+        lines.append(f"- {item.get('domain', 'unknown')}: {age_txt}; {ip_txt}")
+
+    return "\n".join(lines)
+
+
 def analyze_with_ai(message="", url=""):
+    # Live lookups run first so their results are available even if
+    # Gemini is unavailable (quota, network, missing key).
+    try:
+        evidence = gather_evidence(message, url)
+    except Exception as exc:
+        print(f"Evidence gathering failed: {type(exc).__name__}: {exc}")
+        evidence = []
+
     if client is None:
-        return unavailable_result()
+        return unavailable_result(evidence)
+
+    evidence_text = format_evidence(evidence)
 
     prompt = f"""
 You are PishGuard, an AI assistant that analyzes possible scam
@@ -44,6 +99,12 @@ MESSAGE:
 
 URL:
 {url[:2000]}
+
+TOOL EVIDENCE (automated lookups, may be incomplete):
+{evidence_text}
+
+Use the tool evidence when relevant. A failed lookup alone is not
+proof of fraud, so say what the evidence shows without overclaiming.
 
 Assess signs such as prize scams, artificial urgency, threats,
 requests for passwords or OTPs, payment demands, impersonation,
@@ -111,6 +172,7 @@ Reasons must be a JSON array of short strings.
 
         return {
             "available": True,
+            "evidence": evidence,
             "verdict": verdict,
             "confidence": confidence,
             "summary": str(
@@ -128,4 +190,4 @@ Reasons must be a JSON array of short strings.
             f"Gemini analysis failed: "
             f"{type(exc).__name__}: {exc}"
         )
-        return unavailable_result()
+        return unavailable_result(evidence)
