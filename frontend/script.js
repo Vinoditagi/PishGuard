@@ -1,11 +1,11 @@
-"use strict";
+﻿"use strict";
 
 /* ==========================================
-   PISHGUARD AI — COMPLETE FRONTEND JAVASCRIPT
+   PISHGUARD AI â€” COMPLETE FRONTEND JAVASCRIPT
    Backend: Flask at http://127.0.0.1:5001
    ========================================== */
 
-const API_URL = "http://127.0.0.1:5001/api/detect";
+const API_URL = "http://127.0.0.1:5000/api/detect";
 
 /* ---------- HTML ELEMENTS ---------- */
 
@@ -189,19 +189,19 @@ function displayResults(data) {
 
         if (level === "high") {
             resultTitle.textContent =
-                "⚠ Suspicious Message Detected";
+                "âš  Suspicious Message Detected";
             resultTitle.style.color = "#C62828";
             resultTitle.classList.add("high-risk");
 
         } else if (level === "medium") {
             resultTitle.textContent =
-                "⚠ Review This Message Carefully";
+                "âš  Review This Message Carefully";
             resultTitle.style.color = "#B76500";
             resultTitle.classList.add("medium-risk");
 
         } else {
             resultTitle.textContent =
-                "✓ No Obvious Scam Signs Detected";
+                "âœ“ No Obvious Scam Signs Detected";
             resultTitle.style.color = "#218838";
             resultTitle.classList.add("low-risk");
         }
