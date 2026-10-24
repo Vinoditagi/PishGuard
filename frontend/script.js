@@ -1,8 +1,9 @@
-﻿"use strict";
+﻿
+"use strict";
 
 /* ==========================================
-   PISHGUARD AI â€” COMPLETE FRONTEND JAVASCRIPT
-   Backend: Flask at http://127.0.0.1:5001
+   PISHGUARD AI - FRONTEND JAVASCRIPT
+   Flask backend: http://127.0.0.1:5000
    ========================================== */
 
 const API_URL = "http://127.0.0.1:5000/api/detect";
@@ -40,7 +41,7 @@ const charCount = document.getElementById("charCount");
 const currentYear = document.getElementById("currentYear");
 
 
-/* ---------- INITIALIZE PAGE ---------- */
+/* ---------- INITIALIZE ---------- */
 
 if (currentYear) {
     currentYear.textContent = new Date().getFullYear();
@@ -50,17 +51,87 @@ clearError();
 hideResults();
 updateCharacterCount();
 
-
-/* ---------- CHARACTER COUNTER ---------- */
-
 if (messageInput) {
     messageInput.addEventListener("input", updateCharacterCount);
 }
+
+
+/* ---------- CHARACTER COUNTER ---------- */
 
 function updateCharacterCount() {
     if (!messageInput || !charCount) return;
 
     charCount.textContent = messageInput.value.length;
+}
+
+
+/* ---------- URL VALIDATION ---------- */
+
+// This checks URL syntax only. It does not guarantee that
+// the destination is legitimate or safe.
+
+function validateURL(rawURL) {
+    if (!rawURL) {
+        return { valid: true, url: "" };
+    }
+
+    let candidate = rawURL.trim();
+
+    if (candidate.length > 2048) {
+        return {
+            valid: false,
+            error: "The URL must not exceed 2048 characters."
+        };
+    }
+
+    if (/[\u0000-\u001F\u007F]/.test(candidate)) {
+        return {
+            valid: false,
+            error: "The URL contains invalid control characters."
+        };
+    }
+
+    // Support example.com as well as https://example.com.
+    if (!/^[a-zA-Z][a-zA-Z0-9+.-]*:\/\//.test(candidate)) {
+        candidate = "https://" + candidate;
+    }
+
+    let parsed;
+
+    try {
+        parsed = new URL(candidate);
+    } catch {
+        return {
+            valid: false,
+            error: "Please enter a valid website URL."
+        };
+    }
+
+    if (!["http:", "https:"].includes(parsed.protocol)) {
+        return {
+            valid: false,
+            error: "Only HTTP and HTTPS website URLs are supported."
+        };
+    }
+
+    if (!parsed.hostname || !parsed.hostname.includes(".")) {
+        return {
+            valid: false,
+            error: "Please enter a complete website domain, such as example.com."
+        };
+    }
+
+    if (parsed.username || parsed.password) {
+        return {
+            valid: false,
+            error: "Please remove embedded usernames or passwords from the URL."
+        };
+    }
+
+    return {
+        valid: true,
+        url: candidate
+    };
 }
 
 
@@ -76,15 +147,30 @@ if (scanForm) {
             ? messageInput.value.trim()
             : "";
 
-        const url = urlInput
+        const rawURL = urlInput
             ? urlInput.value.trim()
             : "";
 
-        // Validate user input.
-        if (!message && !url) {
+        if (!message && !rawURL) {
             showError("Please enter a message or URL to scan.");
             return;
         }
+
+        if (message.length > 10000) {
+            showError("The message must not exceed 10,000 characters.");
+            return;
+        }
+
+        // Validate URL before sending it to Flask.
+        const urlCheck = validateURL(rawURL);
+
+        if (!urlCheck.valid) {
+            showError(urlCheck.error);
+            if (urlInput) urlInput.focus();
+            return;
+        }
+
+        const url = urlCheck.url;
 
         setLoading(true);
 
@@ -92,7 +178,8 @@ if (scanForm) {
             const response = await fetch(API_URL, {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
+                    "Accept": "application/json"
                 },
                 body: JSON.stringify({
                     message: message,
@@ -106,26 +193,33 @@ if (scanForm) {
                 data = await response.json();
             } catch {
                 throw new Error(
-                    "The server returned an invalid response."
+                    "The backend returned an invalid response. Check the Flask terminal."
                 );
             }
 
             if (!response.ok) {
                 throw new Error(
-                    data.error || "The scan could not be completed."
+                    data.error ||
+                    (Array.isArray(data.reasons)
+                        ? data.reasons.join(" ")
+                        : "The scan could not be completed.")
                 );
             }
 
             displayResults(data);
 
         } catch (error) {
-            console.error("PishGuard error:", error);
+            console.error("PishGuard scan error:", error);
 
-            showError(
-                "Unable to connect to the backend. " +
-                "Check that Flask is running on port 5001. " +
-                "Details: " + error.message
-            );
+            if (error instanceof TypeError) {
+                showError(
+                    "Cannot connect to the Flask backend. " +
+                    "Make sure app.py is running on port 5000. " +
+                    "Check http://127.0.0.1:5000/api/health in your browser."
+                );
+            } else {
+                showError(error.message || "An unexpected error occurred.");
+            }
 
         } finally {
             setLoading(false);
@@ -139,16 +233,15 @@ if (scanForm) {
 function setLoading(isLoading) {
     if (detectBtn) {
         detectBtn.disabled = isLoading;
-
         detectBtn.setAttribute(
             "aria-busy",
-            isLoading ? "true" : "false"
+            String(isLoading)
         );
     }
 
     if (buttonText) {
         buttonText.textContent = isLoading
-            ? "Scanning..."
+            ? "Analyzing..."
             : "Scan for Scams";
     }
 }
@@ -164,94 +257,103 @@ function displayResults(data) {
     resultPanel.hidden = false;
     resultPanel.style.display = "block";
 
-    const result = String(data.result || "Scan completed");
+    const result = String(
+        data.result || "Analysis completed"
+    );
 
-    const score = Number(data.spam_probability);
+    // Backend supplies spam_probability as a percentage (0-100).
+    // Do not interpret a missing score as 0%.
+    const rawScore = data.spam_probability;
 
-    const riskLevel = (
-        data.risk_level &&
-        ["low", "medium", "high"].includes(
-            String(data.risk_level).toLowerCase()
-        )
-    )
-        ? String(data.risk_level)
-        : determineRiskLevel(score);
+    const hasScore =
+        rawScore !== null &&
+        rawScore !== undefined &&
+        rawScore !== "" &&
+        Number.isFinite(Number(rawScore));
 
-    const level = riskLevel.toLowerCase();
+    const score = hasScore
+        ? Math.max(0, Math.min(100, Number(rawScore)))
+        : null;
 
-    // Set result heading and colour.
+    // Prefer the backend's risk level.
+    // If unavailable, use the score as a fallback.
+    const backendLevel = String(data.risk_level || "").toLowerCase();
+
+    let level;
+
+    if (["low", "medium", "high"].includes(backendLevel)) {
+        level = backendLevel;
+    } else if (score !== null) {
+        level = determineRiskLevel(score).toLowerCase();
+    } else if (data.is_suspicious === true ||
+               result.toLowerCase().includes("suspicious")) {
+        level = "medium";
+    } else {
+        level = "low";
+    }
+
+    const presentation = {
+        high: {
+            title: "⚠ Suspicious Indicators Detected",
+            summary:
+                "High-risk indicators were detected. Avoid clicking links " +
+                "or sharing information until you verify the sender.",
+            color: "#C62828",
+            description: "Several warning signals may be present."
+        },
+        medium: {
+            title: "⚠ Review This Result Carefully",
+            summary:
+                "Some warning signs were detected. Verify the sender " +
+                "independently before taking action.",
+            color: "#D97706",
+            description: "Some warning indicators were found."
+        },
+        low: {
+            title: "✓ No Obvious Scam Signs Detected",
+            summary:
+                "No strong scam indicators were detected. This does not " +
+                "guarantee that the message or URL is safe.",
+            color: "#218838",
+            description: "Few warning indicators were found."
+        }
+    };
+
+    const view = presentation[level];
+
     if (resultTitle) {
+        resultTitle.textContent = view.title;
+        resultTitle.style.color = view.color;
+
         resultTitle.classList.remove(
             "high-risk",
             "medium-risk",
             "low-risk"
         );
-
-        if (level === "high") {
-            resultTitle.textContent =
-                "âš  Suspicious Message Detected";
-            resultTitle.style.color = "#C62828";
-            resultTitle.classList.add("high-risk");
-
-        } else if (level === "medium") {
-            resultTitle.textContent =
-                "âš  Review This Message Carefully";
-            resultTitle.style.color = "#B76500";
-            resultTitle.classList.add("medium-risk");
-
-        } else {
-            resultTitle.textContent =
-                "âœ“ No Obvious Scam Signs Detected";
-            resultTitle.style.color = "#218838";
-            resultTitle.classList.add("low-risk");
-        }
+        resultTitle.classList.add(level + "-risk");
     }
 
-    // Colour and update summary.
     if (resultSummary) {
-        if (level === "high") {
-            resultSummary.textContent =
-                "High-risk indicators were detected. Avoid interacting " +
-                "with this message until you verify the sender.";
-            resultSummary.style.color = "#C62828";
-
-        } else if (level === "medium") {
-            resultSummary.textContent =
-                "Some warning signs were detected. Verify the sender " +
-                "independently before clicking links or sharing information.";
-            resultSummary.style.color = "#B76500";
-
-        } else {
-            resultSummary.textContent =
-                "No strong scam indicators were detected. This does not " +
-                "guarantee that the message or URL is safe.";
-            resultSummary.style.color = "#218838";
-        }
+        resultSummary.textContent = view.summary;
+        resultSummary.style.color = view.color;
     }
 
-    // Update badge.
-    updateRiskBadge(riskLevel, resultBadge);
+    updateRiskBadge(level, resultBadge);
 
-    // Update risk score and circle.
-    updateRiskScore(data, riskLevel);
+    updateRiskScore(score, level, view.description);
 
-    // Display detection reasons.
     displayReasons(data.reasons);
 
-    // Display explanation.
     if (resultNote) {
         resultNote.textContent = data.note ||
-            "This result is based on predefined message and URL checks.";
+            "This result is based on the available message and URL analysis checks.";
     }
 
-    // Display security reminder.
     if (safetyNote) {
         safetyNote.textContent = data.safety_note ||
-            "Verify unexpected messages independently. Never share " +
-            "passwords, OTPs, PINs, or banking details.";
+            "Never share passwords, OTPs, PINs, or banking details in response to an unexpected request.";
     }
 
-    // Scroll to results.
     resultPanel.scrollIntoView({
         behavior: "smooth",
         block: "start"
@@ -259,18 +361,18 @@ function displayResults(data) {
 }
 
 
-/* ---------- RISK SCORE CIRCLE ---------- */
+/* ---------- RISK SCORE ---------- */
 
-function updateRiskScore(data, riskLevel) {
-    const rawScore = Number(data.spam_probability);
+function updateRiskScore(score, level, description) {
+    const colors = {
+        low: "#218838",
+        medium: "#D97706",
+        high: "#C62828"
+    };
 
-    const hasValidScore =
-        data.spam_probability !== null &&
-        data.spam_probability !== undefined &&
-        data.spam_probability !== "" &&
-        Number.isFinite(rawScore);
+    const circleColor = colors[level] || colors.low;
 
-    if (!hasValidScore) {
+    if (score === null) {
         if (probabilityPanel) {
             probabilityPanel.hidden = true;
         }
@@ -278,14 +380,11 @@ function updateRiskScore(data, riskLevel) {
         if (probabilityUnavailable) {
             probabilityUnavailable.hidden = false;
             probabilityUnavailable.textContent =
-                "A numerical risk score is unavailable.";
+                "A numerical risk score was not provided by the backend.";
         }
 
         return;
     }
-
-    const score = Math.max(0, Math.min(100, rawScore));
-    const level = riskLevel.toLowerCase();
 
     if (probabilityPanel) {
         probabilityPanel.hidden = false;
@@ -295,32 +394,20 @@ function updateRiskScore(data, riskLevel) {
         probabilityUnavailable.hidden = true;
     }
 
-    // Percentage inside the circle.
     if (spamPercentage) {
-        spamPercentage.textContent = `${Math.round(score)}%`;
+        spamPercentage.textContent = Math.round(score) + "%";
     }
 
-    // Choose the circle colour.
-    let circleColor = "#218838";
-
-    if (level === "high") {
-        circleColor = "#C62828";
-    } else if (level === "medium") {
-        circleColor = "#D97706";
-    }
-
-    // Draw the circular progress indicator.
     if (scoreCircle) {
-        scoreCircle.style.setProperty("--score", `${score}%`);
+        scoreCircle.style.background = `conic-gradient(
+            ${circleColor} 0%,
+            ${circleColor} ${score}%,
+            #E5E4E2 ${score}%,
+            #E5E4E2 100%
+        )`;
 
-        scoreCircle.style.background = `
-            conic-gradient(
-                ${circleColor} 0%,
-                ${circleColor} ${score}%,
-                #E5E4E2 ${score}%,
-                #E5E4E2 100%
-            )
-        `;
+        scoreCircle.style.setProperty("--score", score + "%");
+        scoreCircle.style.setProperty("--ring-color", circleColor);
 
         scoreCircle.setAttribute(
             "aria-label",
@@ -328,95 +415,77 @@ function updateRiskScore(data, riskLevel) {
         );
     }
 
-    // Risk level text.
     if (riskLevelElement) {
         riskLevelElement.textContent =
             level.charAt(0).toUpperCase() + level.slice(1);
 
         riskLevelElement.style.color = circleColor;
-        riskLevelElement.style.fontWeight = "700";
     }
 
-    // Score caption.
     if (scoreCaption) {
         scoreCaption.textContent =
-            `${Math.round(score)}% Risk Score`;
+            Math.round(score) + "% Risk Score";
         scoreCaption.style.color = circleColor;
     }
 
-    // Score explanation.
     if (scoreDescription) {
-        if (score >= 50) {
-            scoreDescription.textContent =
-                "High risk: multiple warning indicators may be present. " +
-                "Verify the message before taking action.";
-
-        } else if (score >= 25) {
-            scoreDescription.textContent =
-                "Medium risk: some warning indicators were found. " +
-                "Check the sender and verify the message independently.";
-
-        } else {
-            scoreDescription.textContent =
-                "Low risk: few warning indicators were found. " +
-                "A low score does not guarantee that a message is safe.";
-        }
+        scoreDescription.textContent =
+            `${description} A low score does not guarantee safety.`;
     }
 }
 
 
 /* ---------- DETERMINE RISK LEVEL ---------- */
 
-function determineRiskLevel(scoreValue) {
-    const score = Number(scoreValue);
-
-    if (!Number.isFinite(score)) {
+function determineRiskLevel(score) {
+    if (!Number.isFinite(Number(score))) {
         return "Low";
     }
 
-    if (score >= 50) {
-        return "High";
-    }
-
-    if (score >= 25) {
-        return "Medium";
-    }
+    if (Number(score) >= 50) return "High";
+    if (Number(score) >= 25) return "Medium";
 
     return "Low";
 }
 
 
-/* ---------- RISK BADGE COLOURS ---------- */
+/* ---------- RISK BADGE ---------- */
 
 function updateRiskBadge(riskLevel, badge) {
     if (!badge) return;
 
     const level = String(riskLevel).toLowerCase();
 
+    const styles = {
+        high: {
+            text: "HIGH RISK",
+            background: "#FDE8E7",
+            color: "#C62828"
+        },
+        medium: {
+            text: "MEDIUM RISK",
+            background: "#FFF0D5",
+            color: "#B76500"
+        },
+        low: {
+            text: "LOW RISK",
+            background: "#DCFCE7",
+            color: "#218838"
+        }
+    };
+
+    const style = styles[level] || styles.low;
+
+    badge.textContent = style.text;
+    badge.style.backgroundColor = style.background;
+    badge.style.color = style.color;
+
     badge.classList.remove(
         "high-risk",
         "medium-risk",
         "low-risk"
     );
-
-    if (level === "high") {
-        badge.textContent = "HIGH RISK";
-        badge.style.backgroundColor = "#FDE8E7";
-        badge.style.color = "#C62828";
-        badge.classList.add("high-risk");
-
-    } else if (level === "medium") {
-        badge.textContent = "MEDIUM RISK";
-        badge.style.backgroundColor = "#FFF0D5";
-        badge.style.color = "#B76500";
-        badge.classList.add("medium-risk");
-
-    } else {
-        badge.textContent = "LOW RISK";
-        badge.style.backgroundColor = "#DCFCE7";
-        badge.style.color = "#218838";
-        badge.classList.add("low-risk");
-    }
+    badge.classList.add(level + "-risk");
 }
 
 
@@ -430,20 +499,23 @@ function displayReasons(reasons) {
     if (!Array.isArray(reasons) || reasons.length === 0) {
         const item = document.createElement("li");
         item.textContent =
-            "No specific detection details were provided.";
+            "No specific detection details were provided by the backend.";
         reasonsList.appendChild(item);
         return;
     }
 
     reasons.forEach(function (reason) {
         const item = document.createElement("li");
+
+        // textContent prevents returned strings from being treated as HTML.
         item.textContent = String(reason);
+
         reasonsList.appendChild(item);
     });
 }
 
 
-/* ---------- SHOW ERROR ---------- */
+/* ---------- ERROR HANDLING ---------- */
 
 function showError(message) {
     if (!errorMessage) {
@@ -455,9 +527,6 @@ function showError(message) {
     errorMessage.hidden = false;
     errorMessage.style.display = "block";
 }
-
-
-/* ---------- CLEAR ERROR ---------- */
 
 function clearError() {
     if (!errorMessage) return;
@@ -491,6 +560,14 @@ if (scanAgainBtn) {
 
         updateCharacterCount();
 
+        if (probabilityPanel) {
+            probabilityPanel.hidden = false;
+        }
+
+        if (probabilityUnavailable) {
+            probabilityUnavailable.hidden = true;
+        }
+
         if (messageInput) {
             messageInput.focus();
         }
@@ -505,7 +582,7 @@ if (scanAgainBtn) {
 }
 
 
-/* ---------- NAVIGATION ---------- */
+/* ---------- SMOOTH NAVIGATION ---------- */
 
 document.querySelectorAll('a[href^="#"]').forEach(function (link) {
     link.addEventListener("click", function (event) {
@@ -527,7 +604,7 @@ document.querySelectorAll('a[href^="#"]').forEach(function (link) {
 });
 
 
-/* ---------- READY ---------- */
+/* ---------- INITIALIZATION CONFIRMATION ---------- */
 
 console.log("PishGuard AI frontend initialized.");
-console.log("Backend endpoint:", API_URL);
+console.log("Flask API endpoint:", API_URL);
