@@ -3,10 +3,10 @@
 
 /* ==========================================
    PISHGUARD AI - FRONTEND JAVASCRIPT
-   Flask backend: http://127.0.0.1:5000
+   Flask backend: http://https://pishguard-ca4x.onrender.com
    ========================================== */
 
-const API_URL = "http://127.0.0.1:5000/api/detect";
+const API_URL = "http://https://pishguard-ca4x.onrender.com/api/detect";
 
 /* ---------- HTML ELEMENTS ---------- */
 
@@ -215,7 +215,7 @@ if (scanForm) {
                 showError(
                     "Cannot connect to the Flask backend. " +
                     "Make sure app.py is running on port 5000. " +
-                    "Check http://127.0.0.1:5000/api/health in your browser."
+                    "Check https://pishguard-ca4x.onrender.com in your browser."
                 );
             } else {
                 showError(error.message || "An unexpected error occurred.");
