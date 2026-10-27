@@ -410,13 +410,13 @@ python -m backend.app
 The Flask development server should display a local address similar to:
 
 ```text
-http://127.0.0.1:5000
+http://https://pishguard-ca4x.onrender.com
 ```
 
 You can check the health endpoint in your browser:
 
 ```text
-http://127.0.0.1:5000/
+http://https://pishguard-ca4x.onrender.com/
 ```
 
 The current health endpoint is expected to return a response identifying PishGuard and its running status.
@@ -430,7 +430,7 @@ Open the `frontend` directory and launch `index.html` in your browser. If your s
 Ensure the frontend API URL points to the running backend:
 
 ```javascript
-const API_URL = "http://127.0.0.1:5000/api/detect";
+const API_URL = "http://https://pishguard-ca4x.onrender.com/api/detect";
 ```
 
 The frontend variable name must match the name actually used in your current `script.js`.
