@@ -8,3 +8,4 @@ mcp<2
 google-genai
 python-whois
 python-dotenv
+gunicorn
