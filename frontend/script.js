@@ -6,7 +6,8 @@
    Flask backend: http://https://pishguard-ca4x.onrender.com
    ========================================== */
 
-const API_URL = "http://https://pishguard-ca4x.onrender.com/api/detect";
+const API_URL = "https://pishguard-ca4x.onrender.com/api/detect";
+
 
 /* ---------- HTML ELEMENTS ---------- */
 
